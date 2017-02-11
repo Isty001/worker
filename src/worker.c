@@ -25,22 +25,12 @@ static void *execute(Worker *worker)
             if (0 != err) {
                 worker->error(err);
             }
+        } else {
+            nanosleep(&worker->timeout, NULL);
         }
-        nanosleep(&worker->timeout, NULL);
     }
 
     return NULL;
-}
-
-void worker_run(Worker *worker)
-{
-    pthread_create(&worker->thread, NULL, (void *(*)(void *)) execute, worker);
-}
-
-void worker_kill(Worker *worker)
-{
-    worker->alive = false;
-    pthread_join(worker->thread, NULL);
 }
 
 Worker *worker_new(Queue *queue, Executor executor, ErrorHandler handler, uint16_t sleep_ms)
@@ -54,6 +44,17 @@ Worker *worker_new(Queue *queue, Executor executor, ErrorHandler handler, uint16
     worker->alive = true;
 
     return worker;
+}
+
+void worker_run(Worker *worker)
+{
+    pthread_check(pthread_create(&worker->thread, NULL, (void *(*)(void *)) execute, worker));
+}
+
+void worker_kill(Worker *worker)
+{
+    worker->alive = false;
+    pthread_check(pthread_join(worker->thread, NULL));
 }
 
 void worker_free(Worker *worker)

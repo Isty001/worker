@@ -1,5 +1,5 @@
 
-Small threaded worker queue using pthread.
+Small threaded worker s using pthread.
 
 ### Example
 
@@ -22,13 +22,13 @@ void handle(int err)
 
 int main(void)
 {
-    Queue *queue = queue_new();
+    Queue *s = queue_new();
     uint16_t sleep_ms = 100;
-    Worker *worker = worker_new(queue, (Executor) execute, handle, sleep_ms);
+    Worker *worker = worker_new(s, (Executor) execute, handle, sleep_ms);
     
     worker_run(worker);
     
-    queue_add(queue, "Hello");
+    queue_add(s, "Hello");
     
     worker_kill(worker); //or worker_free(worker);
     

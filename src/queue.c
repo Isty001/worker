@@ -5,20 +5,6 @@
 #include "worker.h"
 
 
-#define check(res)                              \
-    if (0 != res) {                             \
-        fprintf(stderr, "pthread failure");     \
-        exit(EXIT_FAILURE);                     \
-    }
-
-#define lock(queue) \
-    check(pthread_mutex_lock(&queue->mutex));
-
-#define unlock(queue)                                \
-    check(pthread_cond_broadcast(&queue->cond));     \
-    check(pthread_mutex_unlock(&queue->mutex));
-
-
 typedef struct Node {
     void *message;
     struct Node *next;
@@ -39,8 +25,8 @@ Queue *queue_new(void)
     queue->head = NULL;
     queue->last = NULL;
     queue->count = 0;
-    check(pthread_mutex_init(&queue->mutex, NULL));
-    check(pthread_cond_init(&queue->cond, NULL));
+    pthread_check(pthread_mutex_init(&queue->mutex, NULL));
+    pthread_check(pthread_cond_init(&queue->cond, NULL));
 
     return queue;
 }
@@ -63,7 +49,7 @@ void queue_add(Queue *queue, void *message)
     new->message = message;
     new->next = NULL;
 
-    lock(queue);
+    mutex_lock(queue);
 
     if (queue->last) {
         queue->last->next = new;
@@ -73,7 +59,7 @@ void queue_add(Queue *queue, void *message)
     queue->last = new;
     queue->count++;
 
-    unlock(queue);
+    mutex_unlock(queue);
 }
 
 void *queue_remove(Queue *queue)
@@ -82,7 +68,7 @@ void *queue_remove(Queue *queue)
         return NULL;
     }
 
-    lock(queue);
+    mutex_lock(queue);
 
     Node *tmp = queue->head;
     queue->head = tmp->next;
@@ -92,7 +78,7 @@ void *queue_remove(Queue *queue)
     }
     queue->count--;
 
-    unlock(queue);
+    mutex_unlock(queue);
 
     void *message = tmp->message;
     free(tmp);
@@ -102,9 +88,9 @@ void *queue_remove(Queue *queue)
 
 uint16_t queue_count(Queue *queue)
 {
-    lock(queue);
+    mutex_lock(queue);
     uint16_t count = queue->count;
-    unlock(queue);
+    mutex_unlock(queue);
 
     return count;
 }

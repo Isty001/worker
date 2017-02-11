@@ -2,7 +2,23 @@
 #define ROGUE_CRAFT_WORKER_H
 
 
-#include "stdint.h"
+#include <stdint.h>
+#include <stdlib.h>
+
+
+#define pthread_check(res)                              \
+    if (0 != res) {                             \
+        fprintf(stderr, "pthread failure");     \
+        exit(EXIT_FAILURE);                     \
+    }
+
+#define mutex_lock(s)                                     \
+    pthread_check(pthread_mutex_lock(&s->mutex));
+
+#define mutex_unlock(s)                                        \
+    pthread_check(pthread_cond_broadcast(&s->cond));     \
+    pthread_check(pthread_mutex_unlock(&s->mutex));
+
 
 typedef struct Queue Queue;
 
