@@ -54,6 +54,7 @@ void queue_free(Queue *queue)
         head = head->next;
         free(tmp);
     }
+    free(queue);
 }
 
 void queue_add(Queue *queue, void *message)

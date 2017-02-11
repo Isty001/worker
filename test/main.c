@@ -45,7 +45,10 @@ MU_TEST(test_worker)
     queue_add(queue, &c);
 
     sleep(1);
-    worker_kill(worker);
+    worker_free(worker);
+
+    queue_add(queue, &c);
+    queue_free(queue);
 
     mu_assert_int_eq(10, EXECUTED[0]);
     mu_assert_int_eq(22, EXECUTED[1]);
