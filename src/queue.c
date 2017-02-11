@@ -13,7 +13,6 @@ typedef struct Node {
 struct Queue {
     Node *head;
     Node *last;
-    uint16_t count;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
 };
@@ -24,7 +23,6 @@ Queue *queue_new(void)
     Queue *queue = malloc(sizeof(Queue));
     queue->head = NULL;
     queue->last = NULL;
-    queue->count = 0;
     pthread_check(pthread_mutex_init(&queue->mutex, NULL));
     pthread_check(pthread_cond_init(&queue->cond, NULL));
 
@@ -57,7 +55,6 @@ void queue_add(Queue *queue, void *message)
         queue->head = new;
     }
     queue->last = new;
-    queue->count++;
 
     mutex_unlock(queue);
 }
@@ -76,7 +73,6 @@ void *queue_remove(Queue *queue)
     if (!queue->head) {
         queue->last = NULL;
     }
-    queue->count--;
 
     mutex_unlock(queue);
 
@@ -84,13 +80,4 @@ void *queue_remove(Queue *queue)
     free(tmp);
 
     return message;
-}
-
-uint16_t queue_count(Queue *queue)
-{
-    mutex_lock(queue);
-    uint16_t count = queue->count;
-    mutex_unlock(queue);
-
-    return count;
 }

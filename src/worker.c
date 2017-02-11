@@ -1,6 +1,5 @@
 #include <malloc.h>
 #include <stdbool.h>
-#include <time.h>
 #include <pthread.h>
 #include "worker.h"
 
@@ -17,12 +16,12 @@ struct Worker {
 static void *execute(Worker *worker)
 {
     int err;
+    void *msg;
 
     while (worker->alive) {
-        if (queue_count(worker->queue)) {
-            err = worker->execute(queue_remove(worker->queue));
+        if ((msg = queue_remove(worker->queue))) {
 
-            if (0 != err) {
+            if (0 != (err = worker->execute(msg))) {
                 worker->error(err);
             }
         } else {
@@ -54,7 +53,7 @@ void worker_run(Worker *worker)
 void worker_kill(Worker *worker)
 {
     worker->alive = false;
-    pthread_check(pthread_join(worker->thread, NULL));
+    pthread_join(worker->thread, NULL);
 }
 
 void worker_free(Worker *worker)
