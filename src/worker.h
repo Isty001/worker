@@ -1,5 +1,5 @@
-#ifndef ROGUE_CRAFT_WORKER_H
-#define ROGUE_CRAFT_WORKER_H
+#ifndef WORKER_H
+#define WORKER_H
 
 
 #include <stdint.h>
