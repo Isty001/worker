@@ -30,7 +30,7 @@ int main(void)
     
     queue_add(queue, "Hello");
     
-    worker_kill(worker);
+    worker_kill(worker); //or worker_free(worker);
     
     return 0;
 }
