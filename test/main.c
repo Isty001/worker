@@ -44,8 +44,12 @@ MU_TEST(test_worker)
     queue_add(queue, &c);
     queue_add(queue, &c);
 
+    mu_assert_int_eq(4, queue_count(queue));
+
     sleep(1);
     worker_free(worker);
+
+    mu_assert_int_eq(0, queue_count(queue));
 
     queue_add(queue, &c);
     queue_free(queue);

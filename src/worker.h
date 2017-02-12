@@ -35,6 +35,8 @@ void queue_add(Queue *queue, void *message);
 
 void *queue_remove(Queue *queue);
 
+uint16_t queue_count(Queue *queue);
+
 void queue_free(Queue *queue);
 
 Worker *worker_new(Queue *queue, Executor executor, ErrorHandler handler, uint16_t sleep_ms);
