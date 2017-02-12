@@ -1,6 +1,5 @@
 #include <malloc.h>
 #include <stdbool.h>
-#include <pthread.h>
 #include "worker.h"
 
 
