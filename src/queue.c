@@ -15,7 +15,6 @@ struct Queue {
     Node *last;
     uint16_t count;
     pthread_mutex_t mutex;
-    pthread_cond_t cond;
 };
 
 
@@ -26,7 +25,6 @@ Queue *queue_new(void)
     queue->last = NULL;
     queue->count = 0;
     pthread_check(pthread_mutex_init(&queue->mutex, NULL));
-    pthread_check(pthread_cond_init(&queue->cond, NULL));
 
     return queue;
 }
@@ -40,6 +38,8 @@ void queue_free(Queue *queue)
         head = head->next;
         free(tmp);
     }
+    pthread_check(pthread_mutex_destroy(&queue->mutex));
+
     free(queue);
 }
 
