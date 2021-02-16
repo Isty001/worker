@@ -1,0 +1,18 @@
+{
+  "name": "worker",
+  "description": "simple pthread based worker",
+  "license": "MIT",
+  "keywords": [
+    "worker",
+    "thread",
+    "queue",
+    "pthread"
+  ],
+  "src": [
+    "src/queue.c",
+    "src/worker.c",
+    "src/worker.h"
+  ],
+  "version": "0.1.0",
+  "repo": "Isty001/worker"
+}
